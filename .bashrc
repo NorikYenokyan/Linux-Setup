@@ -3,46 +3,44 @@ if [ -f /etc/bashrc ]; then
 fi
 
 #source /etc/bash_completion.d/git
-function timer_start {                                                      
-    timer=${timer:-$SECONDS}                                                
-}                                                                           
+function timer_start {
+    timer=${timer:-$SECONDS}
+}
 
-function timer_stop {                                                       
-    secs=$(($SECONDS - $timer))                                             
+function timer_stop {
+    secs=$(($SECONDS - $timer))
     second=$(($secs%60))
     minute=$(($secs%3600/60))
     hour=$(($secs%86400/3600))
     day=$(($secs/86400))
 
-    unset timer_show 
+    unset timer_show
     if [ $day -gt 0 ]; then
         timer_show=`printf '%dd:%dh:%dm:%ds:' $day $hour $minute $second`
     elif [ $hour -gt 0 ]; then
         timer_show=`printf '%dh:%dm:%ds:' $hour $minute $second`
-    elif [ $minute -gt 0 ]; then                                        
+    elif [ $minute -gt 0 ]; then
         timer_show=`printf '%dm:%ds:' $minute $second`
-    elif [ $second -gt 0 ]; then                                        
+    elif [ $second -gt 0 ]; then
         timer_show=`printf '%ds:' $second`
     fi
     unset timer
-}   
+}
 
-trap 'timer_start' DEBUG                                                    
+trap 'timer_start' DEBUG
 
-if [ "$PROMPT_COMMAND" == "" ]; then                                        
-    PROMPT_COMMAND="timer_stop" 
+if [ "$PROMPT_COMMAND" == "" ]; then
+    PROMPT_COMMAND="timer_stop"
 else
-    PROMPT_COMMAND="$PROMPT_COMMAND; timer_stop"                            
-fi  
+    PROMPT_COMMAND="$PROMPT_COMMAND; timer_stop"
+fi
 
-#PS1='\[\033[38;5;196m\]\w\[\033[38;5;21m\]\$\[\033[38;5;178m\]$timer_show:\[\033[0m\]'
-PS1='\[\033[38;5;196m\]\w\[\033[38;5;21m\]\$\[\033[38;5;178m\]:$(git branch 2>/dev/null | grep "^*" | colrm 1 2):$timer_show\[\033[0m\]'
-#PS1='\[\033[38;5;196m\]\w\[\033[38;5;21m\]\$\[\033[38;5;178m\]:$(__git_ps1)$timer_show\[\033[0m\]'
+# PS1='\[\033[38;5;196m\]\w\[\033[38;5;21m\]\$\[\033[38;5;178m\]:$(git branch 2>/dev/null | grep "^*" | colrm 1 2):$timer_show\[\033[0m\]'
+PS1='\[\033[38;5;196m\]\w\[\033[38;5;21m\]\$\[\033[38;5;178m\]:$timer_show\[\033[0m\]'
 
 #export PROMPT_COMMAND='history -a; history -r'
 export HISTSIZE=10000
 export HISEFILESIZE=10000
-alias d='cd /mnt/c/Users/NORIKY/Desktop'
 
 alias c='clear'
 alias q='exit'
@@ -51,13 +49,12 @@ alias r='reset'
 alias v='vim'
 alias gv='gvim'
 
-alias ll='ls -lF --color=auto'
-alias la='ls -A --color=auto'
-alias l='ls -CF --color=auto'
-
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
+    alias ll='ls -lF --color=auto'
+    alias la='ls -A --color=auto'
+    alias l='ls -CF --color=auto'
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'
 
@@ -88,11 +85,12 @@ extract()
     fi
 }
 
-function g () 
+function g ()
 {
-    grep "$1" -${3:-rn} ${2:-.} 
+    grep "$1" -${3:-rn} ${2:-.}
 }
 
+# make vim default editor
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
